@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, " />
+  <meta name="description" content="Orça Fácil - Crie orçamentos profissionais em PDF para enviar no WhatsApp." />
+  <meta name="theme-color" content="#0f766e" />
+  <title>Orça Fácil — Orçamentos Profissionais em PDF</title>
+  
+  <!-- html2pdf (precisa de internet para gerar o PDF) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+  <div id="app" style="min-height:100vh;display:flex;flex-direction:column;">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-inner">
+        <div class="logo-wrap">
+          <div class="logo-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1>Orça Fácil</h1>
+            <p>Orçamentos profissionais</p>
+          </div>
+        </div>
+        
+        <nav>
+          <button onclick="showView('home')" class="nav-btn" data-view="home">Início</button>
+          <button onclick="showView('profile')" class="nav-btn" data-view="profile">Meus Dados</button>
+          <button onclick="showView('budget')" class="nav-btn" data-view="budget">Novo Orçamento</button>
+          <button onclick="showView('history')" class="nav-btn" data-view="history">Histórico</button>
+        </nav>
+        
+        <button id="menuBtn" >
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+      
+      <div id="mobileMenu" class="hidden">
+        <button onclick="showView('home')">Início</button>
+        <button onclick="showView('profile')">Meus Dados</button>
+        <button onclick="showView('budget')">Novo Orçamento</button>
+
+      </div>
+    </header>
+
+    <main>
+      
+      <!-- HOME -->
+      <section id="view-home" class="view">
+        <div class="home-hero">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            100% gratuito • PDF pronto para WhatsApp
+          </div>
+          <h2>Crie orçamentos<br><span>profissionais em segundos</span></h2>
+          <p>
+            Ideal para autônomos, prestadores de serviço, designers, desenvolvedores, técnicos e quem vende produtos. 
+            Preencha, visualize e baixe o PDF bonito para enviar no WhatsApp.
+          </p>
+          
+          <div class="hero-buttons">
+            <button onclick="showView('budget')" class="btn-primary" style="padding:0.875rem 2rem;font-size:1rem;">
+              Criar Orçamento Agora
+            </button>
+            <button onclick="showView('profile')" class="btn-secondary" style="padding:0.875rem 2rem;font-size:1rem;">
+              Configurar meus dados
+            </button>
+          </div>
+          
+          <div class="features">
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              </div>
+              <h3>Seus dados salvos</h3>
+              <p>Cadastre uma vez e reutilize em todos os orçamentos.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              </div>
+              <h3>PDF profissional</h3>
+              <p>Layout limpo e moderno, pronto para enviar ao cliente.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+              </div>
+              <h3>Mobile first</h3>
+              <p>Funciona perfeitamente no celular. Crie e envie pelo WhatsApp.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="ad-slot">
+          <div class="ad-label">Anúncio</div>
+          <div class="ad-content">Espaço para Espaço reservado para publicidade futura</div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="view-profile" class="view hidden">
+        <div style="max-width:42rem;margin:0 auto;">
+          <div class="page-header">
+            <h2>Meus Dados</h2>
+            <p>Essas informações aparecem no cabeçalho de todos os orçamentos.</p>
+          </div>
+          
+          <form id="profileForm" class="card">
+            <div style="margin-bottom:1.25rem;">
+              <label class="label">Logo (opcional)</label>
+              <div class="logo-upload">
+                <div id="logoPreview" class="logo-preview">
+                  <span>Sem logo</span>
+                </div>
+                <div>
+                  <input type="file" id="logoInput" accept="image/*" style="display:none;">
+                  <button type="button" onclick="document.getElementById('logoInput').click()" class="btn-secondary" style="font-size:0.875rem;padding:0.5rem 1rem;">Escolher imagem</button>
+                  <button type="button" id="removeLogo" class="hidden" style="margin-left:0.5rem;font-size:0.875rem;color:#dc2626;background:none;border:none;cursor:pointer;">Remover</button>
+                  <p style="font-size:0.75rem;color:var(--slate-400);margin:0.25rem 0 0 0;">PNG ou JPG, preferencialmente quadrado</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-grid">
+              <div class="full">
+                <label class="label">Nome / Razão Social *</label>
+                <input type="text" id="companyName" class="input" placeholder="Ex: João Silva Serviços" required>
+              </div>
+              <div>
+                <label class="label">CPF ou CNPJ</label>
+                <input type="text" id="document" class="input" placeholder="000.000.000-00">
+              </div>
+              <div>
+                <label class="label">Telefone / WhatsApp</label>
+                <input type="tel" id="phone" class="input" placeholder="(21) 99999-9999">
+              </div>
+              <div>
+                <label class="label">E-mail</label>
+                <input type="email" id="email" class="input" placeholder="seu@email.com">
+              </div>
+              <div>
+                <label class="label">Site / Instagram</label>
+                <input type="text" id="website" class="input" placeholder="@seuinstagram ou site.com">
+              </div>
+              <div class="full">
+                <label class="label">Endereço completo</label>
+                <input type="text" id="address" class="input" placeholder="Rua, número, bairro, cidade - UF">
+              </div>
+            </div>
+            
+            <div style="padding-top:0.5rem;">
+              <button type="submit" class="btn-primary" style="width:100%;">Salvar Dados</button>
+            </div>
+          </form>
+          
+          <div id="profileSavedMsg" class="hidden" style="margin-top:1rem;padding:1rem;background:var(--brand-50);color:var(--brand-800);border-radius:0.75rem;font-size:0.875rem;font-weight:500;text-align:center;">
+            ✓ Dados salvos com sucesso!
+          </div>
+        </div>
+      </section>
+
+      <!-- BUDGET -->
+      <section id="view-budget" class="view hidden">
+        <div class="budget-header">
+          <div>
+            <h2 style="font-size:1.5rem;font-weight:700;color:var(--slate-900);margin:0;">Novo Orçamento</h2>
+            <p style="color:var(--slate-500);margin:0.25rem 0 0 0;">Preencha os dados e gere o PDF profissional.</p>
+          </div>
+          <div class="budget-actions">
+            <button onclick="previewBudget()" class="btn-secondary">Pré-visualizar</button>
+            <button onclick="generatePDF()" class="btn-primary">Baixar PDF</button>
+            <button onclick="clearForm()" class="btn-secondary">Limpar formulário</button>
+          </div>
+        </div>
+        
+        <div class="budget-layout">
+          <div>
+            <!-- Client -->
+            <div class="card">
+              <h3 class="card-title">Dados do Cliente</h3>
+              <div class="form-grid">
+                <div class="full">
+                  <label class="label">Nome do Cliente *</label>
+                  <input type="text" id="clientName" class="input" placeholder="Nome completo ou empresa">
+                </div>
+                <div>
+                  <label class="label">Telefone</label>
+                  <input type="tel" id="clientPhone" class="input" placeholder="(21) 99999-9999">
+                </div>
+                <div>
+                  <label class="label">E-mail</label>
+                  <input type="email" id="clientEmail" class="input" placeholder="cliente@email.com">
+                </div>
+              </div>
+            </div>
+            
+            <!-- Items -->
+            <div class="card">
+              <h3 class="card-title">Produtos e serviços</h3>
+              <div class="item-entry">
+                <div><label class="label" for="newDescription">Descrição</label><input id="newDescription" class="input" placeholder="Ex: Instalação de tomada"></div>
+                <div><label class="label" for="newQty">Quantidade</label><input id="newQty" class="input" type="number" min="0.01" step="0.01" value="1"></div>
+                <div><label class="label" for="newPrice">Valor unitário (R$)</label><input id="newPrice" class="input" type="number" min="0" step="0.01" placeholder="0,00"></div>
+                <button type="button" id="addItemBtn" class="btn-primary" onclick="addItem()">Adicionar item</button>
+              </div>
+              <div id="itemsContainer" aria-live="polite"></div>
+              <div class="adjustments">
+                <div><label class="label" for="discount">Desconto (R$)</label><input class="input" id="discount" type="number" min="0" step="0.01" value="0"></div>
+                <div><label class="label" for="surcharge">Acréscimos (R$)</label><input class="input" id="surcharge" type="number" min="0" step="0.01" value="0"></div>
+              </div>
+              <div class="subtotal-line">Subtotal: <strong id="subtotalDisplay">R$ 0,00</strong></div>
+              <div class="total-bar">
+                <span>Total</span>
+                <span id="totalDisplay">R$ 0,00</span>
+              </div>
+            </div>
+            
+            <!-- Extra -->
+            <div class="card">
+              <h3 class="card-title">Informações Adicionais</h3>
+              <div class="form-grid">
+                <div>
+                  <label class="label">Número do Orçamento</label>
+                  <input type="text" id="budgetNumber" class="input" placeholder="Ex: 2026-001">
+                </div>
+                <div>
+                  <label class="label">Validade (dias)</label>
+                  <input type="number" id="validity" class="input" value="15" min="1">
+                </div>
+                <div class="full">
+                  <label class="label">Condições de Pagamento</label>
+                  <input type="text" id="paymentTerms" class="input" placeholder="Ex: 50% entrada + 50% na entrega">
+                </div>
+                <div class="full">
+                  <label class="label">Observações / Notas</label>
+                  <textarea id="notes" class="input" placeholder="Prazo de entrega, garantia, exclusões, etc."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Preview (desktop) -->
+          <div>
+            <div class="preview-sticky">
+              <div class="preview-label">
+                <h3>Prévia do PDF</h3>
+                <span>Atualiza automaticamente</span>
+              </div>
+              <div id="livePreview"></div>
+              
+              <div class="ad-slot" style="margin-top:1.5rem;">
+                <div class="ad-label">Anúncio</div>
+                <div class="ad-content" style="height:5rem;font-size:0.75rem;">Espaço reservado para publicidade futura</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTORY -->
+
+      
+    </main>
+    
+    <footer>
+      <div class="footer-inner">
+        <p>© 2026 Orça Fácil — Feito para autônomos e pequenos negócios</p>
+        <p style="font-size:0.75rem;">Os dados ficam apenas no seu navegador (localStorage)</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modal Preview -->
+  <div id="previewModal" class="hidden">
+    <div class="modal-backdrop" onclick="closePreview()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Pré-visualização do Orçamento</h3>
+        <div style="display:flex;gap:0.5rem;">
+          <button onclick="generatePDF()" class="btn-primary">Baixar PDF</button>
+          <button onclick="closePreview()" style="padding:0.5rem;background:none;border:none;cursor:pointer;border-radius:0.5rem;">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="modalPreviewContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden">
+    <div>
+      <span id="toastMsg"></span>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
