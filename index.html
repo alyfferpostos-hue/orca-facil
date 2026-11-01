@@ -122,10 +122,10 @@
                   <span>Sem logo</span>
                 </div>
                 <div>
-                  <input type="file" id="logoInput" accept="image/*" style="display:none;">
-                  <button type="button" onclick="document.getElementById('logoInput').click()" class="btn-secondary" style="font-size:0.875rem;padding:0.5rem 1rem;">Escolher imagem</button>
+                  <input type="file" id="logoInput" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" aria-label="Selecionar logotipo" class="logo-file-input">
+                  <label for="logoInput" class="btn-secondary logo-pick">Escolher imagem</label>
                   <button type="button" id="removeLogo" class="hidden" style="margin-left:0.5rem;font-size:0.875rem;color:#dc2626;background:none;border:none;cursor:pointer;">Remover</button>
-                  <p style="font-size:0.75rem;color:var(--slate-400);margin:0.25rem 0 0 0;">PNG ou JPG, preferencialmente quadrado</p>
+                  <p style="font-size:0.75rem;color:var(--slate-400);margin:0.25rem 0 0 0;">JPG, PNG ou foto do iPhone. Imagens grandes serão reduzidas automaticamente.</p>
                 </div>
               </div>
             </div>

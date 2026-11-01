@@ -826,6 +826,7 @@ footer {
   background: white;
   box-sizing: border-box;
   position: relative;
+  padding-bottom: 24mm;
 }
 
 .pdf-header {
@@ -833,6 +834,7 @@ footer {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 28px;
+  gap: 20px;
   padding-bottom: 20px;
   border-bottom: 2px solid #0d9488;
 }
@@ -841,10 +843,13 @@ footer {
   max-height: 64px;
   max-width: 160px;
   object-fit: contain;
+  display: block;
 }
 
 .pdf-company {
-  text-align: right;
+  text-align: left;
+  min-width: 0;
+  flex: 1;
 }
 
 .pdf-company-name {
@@ -1006,10 +1011,9 @@ footer {
 }
 
 .pdf-footer {
-  position: absolute;
-  bottom: 14mm;
-  left: 16mm;
-  right: 16mm;
+  position: relative;
+  margin-top: 28px;
+  width: 100%;
   border-top: 1px solid #e2e8f0;
   padding-top: 10px;
   display: flex;
@@ -1042,3 +1046,17 @@ footer {
 .empty-items {padding:16px;border:1px dashed #cbd5e1;border-radius:10px;color:#64748b}
 .item-grid {grid-template-columns:2fr 0.7fr 1fr 1fr}
 @media(max-width:760px){.item-entry,.item-grid{grid-template-columns:1fr 1fr}.item-entry>div:first-child,.item-entry>button,.item-grid>div:first-child{grid-column:1/-1}}
+
+/* Ajustes v4: seleção de logo e rodapé no fluxo do documento */
+.logo-file-input { position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; }
+.logo-pick { display:inline-block; cursor:pointer; font-size:.875rem; padding:.5rem 1rem; }
+.logo-file-input:focus-visible + .logo-pick { outline:2px solid #0d9488; outline-offset:3px; }
+.pdf-logo-box { flex:0 0 auto; max-width:160px; }
+.pdf-logo-placeholder { width:64px; height:64px; background:#f0fdfa; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#0d9488; font-weight:700; font-size:20px; }
+.pdf-company-info { overflow-wrap:anywhere; }
+.pdf-section { break-inside:avoid; page-break-inside:avoid; }
+.pdf-table tr { break-inside:avoid; page-break-inside:avoid; }
+.pdf-footer { clear:both; break-inside:avoid; page-break-inside:avoid; align-items:center; gap:12px; }
+.pdf-brand { color:#64748b; font-size:11px; }
+.pdf-brand strong { color:#0f766e; font-size:13px; letter-spacing:.5px; }
+@media(max-width:640px) { .pdf-page { padding-bottom:24px; } .pdf-logo-box { max-width:32%; } .pdf-logo { max-width:100%; } }

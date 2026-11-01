@@ -129,24 +129,41 @@ function saveProfile(e) {
   updateLivePreview();
 }
 
-function handleLogoUpload(e) {
-  const file = e.target.files[0];
+async function handleLogoUpload(e) {
+  const file = e.target.files && e.target.files[0];
   if (!file) return;
-  
-  if (file.size > 1.5 * 1024 * 1024) {
-    showToast('Imagem muito grande. Use até 1.5MB.');
-    return;
-  }
-  
-  const reader = new FileReader();
-  reader.onload = (ev) => {
-    profile.logo = ev.target.result;
+  try {
+    const source = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Não foi possível ler a imagem'));
+      reader.readAsDataURL(file);
+    });
+    const img = await new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error('Formato de imagem não suportado. Tente JPG ou PNG.'));
+      image.src = source;
+    });
+    const canvas = document.createElement('canvas');
+    const factor = Math.min(1, 900 / Math.max(img.naturalWidth, img.naturalHeight));
+    canvas.width = Math.max(1, Math.round(img.naturalWidth * factor));
+    canvas.height = Math.max(1, Math.round(img.naturalHeight * factor));
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Não foi possível processar a imagem');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    profile.logo = canvas.toDataURL('image/jpeg', 0.84);
     fillProfileForm();
-    // Auto-save logo
-    try { localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile)); } catch(e) { console.warn('Armazenamento indisponível',e); }
+    try { localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile)); }
+    catch (storageError) { showToast('Logo carregada nesta sessão, mas não foi possível salvá-la no aparelho.'); }
     updateLivePreview();
-  };
-  reader.readAsDataURL(file);
+    showToast('Logotipo carregado!');
+  } catch (err) {
+    console.error(err);
+    showToast(err.message || 'Não foi possível carregar a imagem.');
+  } finally {
+    e.target.value = '';
+  }
 }
 
 function removeLogo() {
@@ -279,12 +296,12 @@ function buildPDFHTML() {
   return `
     <div class="pdf-page" id="pdfExportArea">
       <div class="pdf-header">
-        <div>
-          ${logoHTML || `<div style="width:64px;height:64px;background:#f0fdfa;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#0d9488;font-weight:700;font-size:20px;">OF</div>`}
-        </div>
         <div class="pdf-company">
           <div class="pdf-company-name">${escapeHtml(profile.companyName) || 'Sua Empresa'}</div>
           <div class="pdf-company-info">${companyLines.map(l => escapeHtml(l)).join('<br>')}</div>
+        </div>
+        <div class="pdf-logo-box">
+          ${logoHTML || `<div class="pdf-logo-placeholder">OF</div>`}
         </div>
       </div>
       
@@ -346,7 +363,7 @@ function buildPDFHTML() {
       ` : ''}
       
       <div class="pdf-footer">
-        <span>Gerado com Orça Fácil</span>
+        <span class="pdf-brand">Criado com <strong>ORÇAFÁCIL</strong></span>
         <span>${dateStr}</span>
       </div>
     </div>
