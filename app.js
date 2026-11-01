@@ -396,71 +396,92 @@ function validateBudget(){
  if (moneyNumber('discount')<0||moneyNumber('surcharge')<0) { showToast('Desconto e acréscimos não podem ser negativos.'); return false; }
  return true;
 }
-async function generatePDF() {
- if(!validateBudget())return;
-  // Basic validation
-  if (!profile.companyName) {
-    showToast('Configure seus dados em "Meus Dados" primeiro');
-    showView('profile');
-    return;
+// Gera o arquivo PDF real no navegador, sem criar URL pública no Render.
+async function createPDFFile() {
+  if (!validateBudget()) return null;
+  if (typeof html2pdf !== 'function') {
+    showToast('Gerador de PDF indisponível. Verifique a conexão.');
+    return null;
   }
-  
   const clientName = document.getElementById('clientName').value.trim();
-  if (!clientName) {
-    showToast('Informe o nome do cliente');
-    return;
-  }
-  
-  const hasItems = items.length > 0 && items.every(i => i.description.trim() && Number.isFinite(i.qty) && i.qty > 0 && Number.isFinite(i.price) && i.price >= 0);
-  if (!hasItems) {
-    showToast('Adicione pelo menos um item com descrição e valor');
-    return;
-  }
-  
-  if (moneyNumber('discount') < 0 || moneyNumber('surcharge') < 0) { showToast('Desconto e acréscimos não podem ser negativos'); return; }
-  if (typeof html2pdf !== 'function') { showToast('Biblioteca de PDF indisponível. Verifique sua conexão e recarregue.'); return; }
-  showToast('Gerando PDF...');
-  
-  // Create off-screen container for clean export
+  const filename = `Orcamento_${sanitizeFilename(clientName)}_${sanitizeFilename(document.getElementById('budgetNumber').value || 'OF')}.pdf`;
   const temp = document.createElement('div');
-  temp.style.position = 'fixed';
-  temp.style.left = '0';
-  temp.style.zIndex = '-1';
-  temp.style.pointerEvents = 'none';
-  temp.style.top = '0';
+  temp.style.cssText = 'position:fixed;left:0;top:0;z-index:-1;pointer-events:none;';
   temp.innerHTML = buildPDFHTML();
   document.body.appendChild(temp);
-  
-  const element = temp.querySelector('.pdf-page');
-  
-  const opt = {
-    margin: 0,
-    filename: `Orcamento_${sanitizeFilename(clientName)}_${document.getElementById('budgetNumber').value || 'OF'}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { 
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      letterRendering: true
-    },
-    jsPDF: { 
-      unit: 'mm', 
-      format: 'a4', 
-      orientation: 'portrait' 
-    }
-  };
-  
   try {
-    await html2pdf().set(opt).from(element).save();
-    
-    showToast('PDF baixado com sucesso! ✓');
-  } catch (err) {
-    console.error(err);
-    showToast('Erro ao gerar PDF. Tente novamente.');
+    const element = temp.querySelector('.pdf-page');
+    const options = {
+      margin: 0, filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    const blob = await html2pdf().set(options).from(element).outputPdf('blob');
+    if (!(blob instanceof Blob) || !blob.size) throw new Error('PDF vazio');
+    return new File([blob], filename, { type: 'application/pdf' });
   } finally {
-    document.body.removeChild(temp);
+    temp.remove();
   }
 }
+
+function downloadPDFFile(file) {
+  const url = URL.createObjectURL(file);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = file.name;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  // O Safari pode demorar para iniciar o salvamento.
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+async function generatePDF() {
+  try {
+    const file = await createPDFFile();
+    if (!file) return;
+    downloadPDFFile(file);
+    showToast('PDF gerado. Confira os downloads do navegador.');
+  } catch (error) {
+    console.error('Falha ao baixar PDF:', error);
+    showToast('Não foi possível baixar o PDF. Tente novamente.');
+  }
+}
+
+async function sharePDF() {
+  try {
+    const file = await createPDFFile();
+    if (!file) return;
+    // Compartilha os bytes do arquivo, jamais o endereço do site.
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+      try {
+        await navigator.share({ files: [file], title: 'Orçamento em PDF' });
+        return;
+      } catch (error) {
+        if (error.name === 'AbortError') return;
+        console.warn('Compartilhamento nativo indisponível:', error);
+      }
+    }
+    downloadPDFFile(file);
+    showToast('Compartilhamento indisponível. PDF enviado aos downloads.');
+  } catch (error) {
+    console.error('Falha ao compartilhar PDF:', error);
+    showToast('Não foi possível preparar o PDF.');
+  }
+}
+
+// Valor zero é opcional: facilita digitar, mas campo vazio vale zero.
+['discount', 'surcharge'].forEach(id => {
+  const field = document.getElementById(id);
+  if (!field) return;
+  field.addEventListener('focus', () => {
+    if (Number(field.value) === 0) field.value = '';
+  });
+  field.addEventListener('blur', () => {
+    if (field.value.trim() === '') field.value = '0';
+  });
+});
 
 // ========== HELPERS ==========
 function formatCurrency(value) {

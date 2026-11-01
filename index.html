@@ -178,6 +178,7 @@
           <div class="budget-actions">
             <button onclick="previewBudget()" class="btn-secondary">Pré-visualizar</button>
             <button onclick="generatePDF()" class="btn-primary">Baixar PDF</button>
+            <button type="button" onclick="sharePDF()" class="btn-secondary">Compartilhar PDF</button>
             <button onclick="clearForm()" class="btn-secondary">Limpar formulário</button>
           </div>
         </div>
@@ -287,6 +288,7 @@
         <h3>Pré-visualização do Orçamento</h3>
         <div style="display:flex;gap:0.5rem;">
           <button onclick="generatePDF()" class="btn-primary">Baixar PDF</button>
+            <button type="button" onclick="sharePDF()" class="btn-secondary">Compartilhar PDF</button>
           <button onclick="closePreview()" style="padding:0.5rem;background:none;border:none;cursor:pointer;border-radius:0.5rem;">
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
