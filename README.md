@@ -1,77 +1,23 @@
-# Orça Fácil
+# OrçaFácil v6 — versão de testes
 
-Aplicativo web simples e profissional para criar orçamentos em PDF, ideal para autônomos, prestadores de serviço e pequenos negócios.
+Site estático responsivo, sem backend. Arquivos: `index.html`, `styles.css`, `app.js`.
 
-## Funcionalidades
+## Publicar no GitHub/Render
 
-- Cadastro dos dados da empresa / profissional (nome, logo, CPF/CNPJ, telefone, e-mail, endereço)
-- Criação de orçamentos com múltiplos itens (descrição, quantidade, valor unitário)
-- Pré-visualização em tempo real do PDF
-- Geração de PDF limpo e profissional (A4)
-- Histórico local dos últimos orçamentos (localStorage)
-- Layout responsivo (funciona bem no celular)
-- Pronto para monetização com Google AdSense (espaços reservados)
+Extraia o ZIP e envie os três arquivos da raiz para a raiz do repositório `orca-facil`, substituindo os antigos. No Render, use Static Site, publish directory `.`. Não é necessário build command. Aguarde o deploy. Para testar sem substituir o site atual, publique em outro Static Site ou teste localmente.
 
-## Como usar localmente
+## Recursos
 
-1. Abra o arquivo `index.html` no navegador  
-   ou  
-2. Sirva a pasta com qualquer servidor estático:
+- Layout responsivo para celular e computador.
+- Cadastro de empresa, logo, duas cores; remoção experimental **somente de fundo branco**, sem IA/API.
+- Orçamentos com itens editáveis, descontos, acréscimos, prévia, PDF A4, download e compartilhamento quando o navegador permite.
+- Rodapé numerado em cada página do PDF; tabela com quebra automática de páginas.
+- Salvamento local e backup JSON.
 
-```bash
-npx serve .
-# ou
-python -m http.server 8080
-```
+## Limitações
 
-## Deploy no Render (recomendado)
-
-1. Crie um repositório no GitHub com os arquivos desta pasta.
-2. No [Render.com](https://render.com):
-   - New → Static Site
-   - Conecte o repositório
-   - Build Command: deixe vazio (ou `echo "static"`)
-   - Publish Directory: `.` (raiz)
-3. Pronto! O site ficará online com HTTPS.
-
-## Deploy no GitHub Pages
-
-1. Suba os arquivos para um repositório.
-2. Settings → Pages → Source: Deploy from a branch → main / root.
-3. Acesse `https://seu-usuario.github.io/nome-do-repo`
-
-## Monetização (Google AdSense)
-
-Os espaços de anúncio já estão marcados com a classe `.ad-slot`.
-
-Depois de aprovar o site no AdSense:
-
-1. Substitua o conteúdo de cada `.ad-content` pelo código do AdSense.
-2. Ou use o formato de anúncio responsivo do Google.
-
-Exemplo:
-
-```html
-<div class="ad-slot my-8">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-XXXXXXXX"
-       data-ad-slot="YYYYYYYY"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-</div>
-```
-
-## Tecnologias
-
-- HTML + Tailwind CSS (CDN)
-- JavaScript vanilla
-- html2pdf.js (geração de PDF no cliente)
-- localStorage (persistência)
-
-Nenhum backend necessário. Tudo roda no navegador do usuário.
-
-## Licença
-
-Uso livre. Pode modificar e comercializar.
+- jsPDF e AutoTable são carregados de CDN; internet é necessária para gerar PDFs, a menos que as bibliotecas sejam hospedadas localmente.
+- Dados ficam no localStorage do navegador, sem sincronização. Não são garantidos se limpar dados do navegador ou usar aba anônima.
+- Remoção de fundo é simples, não equivale a remoção por IA; pode apagar partes brancas do logotipo.
+- Prévia HTML é uma representação visual; paginação exata deve ser conferida no PDF baixado.
+- O arquivo foi verificado sintaticamente, mas **não foi testado em Safari/iPhone nem em Render**. Teste os fluxos antes de substituir a versão publicada.
